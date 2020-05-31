@@ -1,5 +1,5 @@
-# Hello World Example
+# Travis CI integration test with ESP32 
+[![Build Status](https://travis-ci.com/DKrepsky/ESP32CI.svg?branch=master)](https://travis-ci.com/DKrepsky/ESP32CI)
 
-Starts a FreeRTOS task to print "Hello World"
-
-See the README.md file in the upper level 'examples' directory for more information about examples.
+This repository is an example of how to setup a minimum .travis.ci file and perform
+continuous integration with ESP-IDF.
