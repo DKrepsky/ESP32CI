@@ -1,0 +1,55 @@
+# ESP32 travis.ci integration.
+sudo: false
+language: bash
+os:
+  - linux
+
+# Aditional packages required, reference:
+# https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/linux-setup.html
+addons:
+  apt:
+    packages:
+      - flex
+      - bison
+      - gperf
+      - python
+      - python-pip
+      - python-setuptools
+      - cmake
+      - ninja-build
+      - ccache
+      - libffi-dev
+      - libssl-dev
+      - dfu-util
+
+before_install:
+  # Project path.
+  - PROJECT_PATH=$(pwd)
+  # ESP-IDF path.
+  - IDF_PATH=~/esp-idf
+  # Which branch of ESP-IDF is used.
+  - IDF_BRANCH=release/v4.2
+  # Toolchain path.
+  - XTENSA_PATH=~/xtensa-esp32-elf
+  # Toolchain archive to download and use.
+  # This value was obtained from esp-idf/tools/tools.json
+  - TOOLCHAIN_FILE=xtensa-esp32-elf-gcc8_2_0-esp-2020r1-linux-amd64.tar.gz
+
+install:
+  # Use user folder to avoid root.
+  - cd ~/
+  # Toolchain setup:
+  - wget https://dl.espressif.com/dl/${TOOLCHAIN_FILE}
+  - tar -xzf ${TOOLCHAIN_FILE}
+  # ESP-IDF setup:
+  - git clone https://github.com/espressif/esp-idf.git
+  - cd esp-idf/
+  - git checkout ${IDF_BRANCH}
+  - git submodule update --init --recursive
+  - python -m pip install --user -r ./requirements.txt
+  # Add tools to PATH.
+  - export PATH=$PATH:$XTENSA_PATH/bin:$IDF_PATH/tools
+
+script:
+  - cd $PROJECT_PATH
+  - idf.py all
